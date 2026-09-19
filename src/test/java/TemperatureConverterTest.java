@@ -32,11 +32,6 @@ class TemperatureConverterTest {
     }
 
     @Test
-    void celsiusToFahrenheit_shouldConvertNegativeForty() {
-        assertEquals(-40.0, converter.celsiusToFahrenheit(-40.0), 0.001);
-    }
-
-    @Test
     void isExtremeTemperature_shouldReturnTrueForLowerBoundary() {
         assertTrue(converter.isExtremeTemperature(-40.0));
     }
@@ -66,4 +61,28 @@ class TemperatureConverterTest {
         assertFalse(converter.isExtremeTemperature(-39.9));
         assertFalse(converter.isExtremeTemperature(49.9));
     }
+    // ... existing code ...
+
+    @Test
+    void celsiusToFahrenheit_shouldConvertNegativeForty() {
+        assertEquals(-40.0, converter.celsiusToFahrenheit(-40.0), 0.001);
+    }
+
+    @Test
+    void kelvinToCelsius_shouldConvertFreezingPoint() {
+        assertEquals(0.0, converter.kelvinToCelsius(273.15), 0.001);
+    }
+
+    @Test
+    void kelvinToCelsius_shouldConvertBoilingPoint() {
+        assertEquals(100.0, converter.kelvinToCelsius(373.15), 0.001);
+    }
+
+    @Test
+    void kelvinToCelsius_shouldConvertAbsoluteZero() {
+        assertEquals(-273.15, converter.kelvinToCelsius(0.0), 0.001);
+    }
+
+
+// ... existing code ...
 }
