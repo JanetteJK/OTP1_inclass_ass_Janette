@@ -6,10 +6,10 @@ pipeline {
     }
 
     environment {
-        PATH = "C:\\Users\\janet\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe"
-        DOCKERHUB_CREDENTIALS_ID = 'Docker_Hub'
+        PATH = "C:\\Program Files\\DockerDesktop\\resources\\bin;${env.PATH}"
+        DOCKERHUB_CREDENTIALS_ID = 'docker'
         DOCKERHUB_REPO = 'janetjk/temp_demo'
-        DOCKER_IMAGE_TAG = 'latest'
+        DOCKER_IMAGE_TAG = 'v1'
     }
     stages {
         stage('Checkout') {
