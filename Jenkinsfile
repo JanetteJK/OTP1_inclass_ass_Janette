@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        PATH = "C:\\Users\\janet\\.docker"
+        PATH = "C:\\Users\\janet\\.docker\\docker.exe"
         DOCKERHUB_CREDENTIALS_ID = 'Docker_Hub'
         DOCKERHUB_REPO = 'janetjk/temp_demo'
         DOCKER_IMAGE_TAG = 'latest'
