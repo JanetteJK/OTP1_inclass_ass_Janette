@@ -1,0 +1,17 @@
+.root {
+    -fx-font-family: "Baskerville Old Face"}
+
+.history {
+    -fx-background-color: olive;
+}
+
+.historylabel {
+    -fx-background-color: darkolivegreen;
+}
+.label {
+    -fx-font-family: "Baskerville Old Face";
+}
+
+.anchorpane {
+    -fx-background-color: AntiqueWhite;
+}

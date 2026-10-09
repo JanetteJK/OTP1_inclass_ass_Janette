@@ -1,3 +1,5 @@
+package controller;
+
 public class TemperatureConverter {
 
     public double fahrenheitToCelsius(double fahrenheit) {
@@ -11,8 +13,14 @@ public class TemperatureConverter {
     public double kelvinToCelsius(double kelvin) {
         return kelvin - 273.15;
     }
+    public double celsiusToKelvin(double celsius) {
+        return celsius + 273.15;
+    }
 
     public boolean isExtremeTemperature(double celsius) {
         return celsius <= -40 || celsius >= 50;
     }
+
 }
+
+
