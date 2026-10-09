@@ -84,6 +84,21 @@ class TemperatureConverterTest {
         assertEquals(-273.15, converter.kelvinToCelsius(0.0), 0.001);
     }
 
+    @Test
+    void celsiusToKelvin_shouldConvertFreezingPoint() {
+        assertEquals(273.15, converter.celsiusToKelvin(0.0), 0.001);
+    }
+
+    @Test
+    void celsiusToKelvin_shouldConvertBoilingPoint() {
+        assertEquals(373.15, converter.celsiusToKelvin(100.0), 0.001);
+    }
+
+    @Test
+    void celsiusToKelvin_shouldConvertAbsoluteZeroCelsius() {
+        assertEquals(0.0, converter.celsiusToKelvin(-273.15), 0.001);
+    }
+
 
 // ... existing code ...
 }
