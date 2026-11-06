@@ -16,13 +16,14 @@ public class temperatureRecordsDAO {
             return;
         }
 
-        String sql = "INSERT INTO temperature_records (temperature_value, temperature_unit, timestamp ) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO temperature_records (temperature_value, temperature_start_unit, temperature_unit, timestamp ) VALUES (?, ?, ?, ?)";
         try {
             PreparedStatement stmt = conn.prepareStatement(sql);
 
             stmt.setDouble(1, t.getValue());
-            stmt.setString(2, t.getUnit());
-            stmt.setTimestamp(3, t.getTime());
+            stmt.setString(2, t.getStartUnit());
+            stmt.setString(3, t.getUnit());
+            stmt.setTimestamp(4, t.getTime());
 
 
             stmt.executeUpdate();
@@ -34,7 +35,7 @@ public class temperatureRecordsDAO {
     }
 
     public List<temperatureRecord> getHistory() {
-        String sql = "SELECT record_id, temperature_value, temperature_unit, timestamp FROM temperature_records";
+        String sql = "SELECT record_id, temperature_value, temperature_start_unit ,temperature_unit, timestamp FROM temperature_records";
         List<temperatureRecord> records = new ArrayList<temperatureRecord>();
 
         try {
@@ -44,9 +45,10 @@ public class temperatureRecordsDAO {
             while (rs.next()) {
                 int id = rs.getInt(1);
                 Double value = rs.getDouble(2);
-                String unit = rs.getString(3);
-                Timestamp time = rs.getTimestamp(4);
-                records.add(new temperatureRecord(value, unit, time));
+                String startUnit = rs.getString(3);
+                String unit = rs.getString(4);
+                Timestamp time = rs.getTimestamp(5);
+                records.add(new temperatureRecord(value,startUnit, unit, time));
             }
         } catch (SQLException e) {
             e.printStackTrace();

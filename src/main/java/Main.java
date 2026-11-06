@@ -1,4 +1,3 @@
-import controller.TemperatureConverter;
 import view.startConv;
 
 public class Main {
