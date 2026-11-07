@@ -1,11 +1,9 @@
-// src/test/java/view/startConvTest.java
 package view;
-
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class startConvTest {
+class startConvUnitTest {
 
     @Test
     void constructor_shouldCreateApplicationInstance() {

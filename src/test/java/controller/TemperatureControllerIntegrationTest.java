@@ -1,4 +1,3 @@
-// src/test/java/controller/tempControllerTest.java
 package controller;
 
 import javafx.application.Platform;
@@ -7,28 +6,40 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class tempControllerTest {
+class TemperatureControllerIntegrationTest {
 
     @BeforeAll
     static void startJavaFxToolkit() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<Throwable> startupError = new AtomicReference<>();
 
         try {
             Platform.startup(latch::countDown);
         } catch (IllegalStateException alreadyStarted) {
             latch.countDown();
+        } catch (Throwable throwable) {
+            startupError.set(throwable);
+            latch.countDown();
         }
 
-        latch.await(5, TimeUnit.SECONDS);
+        assertTrue(latch.await(5, TimeUnit.SECONDS), "JavaFX toolkit did not start in time");
+
+        Assumptions.assumeTrue(
+                startupError.get() == null,
+                "JavaFX toolkit is not available in this environment"
+        );
     }
 
     @Test
@@ -77,16 +88,23 @@ class tempControllerTest {
 
     private static void runOnJavaFxThread(Runnable action) throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<Throwable> error = new AtomicReference<>();
 
         Platform.runLater(() -> {
             try {
                 action.run();
+            } catch (Throwable throwable) {
+                error.set(throwable);
             } finally {
                 latch.countDown();
             }
         });
 
-        latch.await(5, TimeUnit.SECONDS);
+        assertTrue(latch.await(5, TimeUnit.SECONDS), "JavaFX action did not finish in time");
+
+        if (error.get() != null) {
+            throw new AssertionError("JavaFX action failed", error.get());
+        }
     }
 
     private static Object getPrivateField(Object target, String fieldName) throws Exception {

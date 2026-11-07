@@ -1,4 +1,3 @@
-// src/test/java/dao/temperatureRecordsDAOTest.java
 package dao;
 
 import datasource.MariaDBConnection;
@@ -15,7 +14,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class temperatureRecordsDAOTest {
 
@@ -31,6 +33,7 @@ class temperatureRecordsDAOTest {
         temperatureRecord record = new temperatureRecord(
                 10.0,
                 "Celsius",
+                "Fahrenheit",
                 Timestamp.valueOf(LocalDateTime.now())
         );
 
@@ -47,16 +50,17 @@ class temperatureRecordsDAOTest {
         when(connection.prepareStatement(anyString())).thenReturn(statement);
 
         Timestamp timestamp = Timestamp.valueOf(LocalDateTime.of(2026, 1, 1, 10, 15));
-        temperatureRecord record = new temperatureRecord(100.0, "Celsius", timestamp);
+        temperatureRecord record = new temperatureRecord(100.0, "Celsius", "Fahrenheit", timestamp);
 
         temperatureRecordsDAO.addRecord(record);
 
         verify(connection).prepareStatement(
-                "INSERT INTO temperature_records (temperature_value, temperature_unit, timestamp ) VALUES (?, ?, ?)"
+                "INSERT INTO temperature_records (temperature_value, temperature_start_unit, temperature_unit, timestamp ) VALUES (?, ?, ?, ?)"
         );
         verify(statement).setDouble(1, 100.0);
         verify(statement).setString(2, "Celsius");
-        verify(statement).setTimestamp(3, timestamp);
+        verify(statement).setString(3, "Fahrenheit");
+        verify(statement).setTimestamp(4, timestamp);
         verify(statement).executeUpdate();
     }
 
@@ -69,8 +73,9 @@ class temperatureRecordsDAOTest {
         MariaDBConnection.conn = connection;
 
         when(connection.createStatement()).thenReturn(statement);
-        when(statement.executeQuery("SELECT record_id, temperature_value, temperature_unit, timestamp FROM temperature_records"))
-                .thenReturn(resultSet);
+        when(statement.executeQuery(
+                "SELECT record_id, temperature_value, temperature_start_unit ,temperature_unit, timestamp FROM temperature_records"
+        )).thenReturn(resultSet);
 
         Timestamp timestamp = Timestamp.valueOf(LocalDateTime.of(2026, 1, 1, 9, 0));
 
@@ -78,7 +83,8 @@ class temperatureRecordsDAOTest {
         when(resultSet.getInt(1)).thenReturn(1);
         when(resultSet.getDouble(2)).thenReturn(36.6);
         when(resultSet.getString(3)).thenReturn("Celsius");
-        when(resultSet.getTimestamp(4)).thenReturn(timestamp);
+        when(resultSet.getString(4)).thenReturn("Fahrenheit");
+        when(resultSet.getTimestamp(5)).thenReturn(timestamp);
 
         temperatureRecordsDAO dao = new temperatureRecordsDAO();
 
@@ -86,7 +92,8 @@ class temperatureRecordsDAOTest {
 
         assertEquals(1, records.size());
         assertEquals(36.6, records.get(0).getValue());
-        assertEquals("Celsius", records.get(0).getUnit());
+        assertEquals("Celsius", records.get(0).getStartUnit());
+        assertEquals("Fahrenheit", records.get(0).getUnit());
         assertEquals(timestamp, records.get(0).getTime());
     }
 }

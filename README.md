@@ -14,6 +14,8 @@ The app converts temperatures from Celsius to Fahrenheit and vice versa and show
 
 ▪ Database () --> MariaDb
 
+▪ Database Localization () --> The chosen localizatin method for the database was to create a translation table, since there is not too much translating to be done and the previous tables needn't be altered. Though this method needs a bit more code to be eritten it seemed like the most efficient way for the translation.
+
 ▪ Testing () --> JUnit 5
 
 ▪ Dependencies () --> JaCoCo, Jenkins, Mockito, MariaDB, Junit
