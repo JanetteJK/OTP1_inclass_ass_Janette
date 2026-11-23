@@ -10,6 +10,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS_ID = 'docker'
         DOCKERHUB_REPO = 'janetjk/temp_demo'
         DOCKER_IMAGE_TAG = 'v1'
+        SONARQUBE_SERVER = 'SonarQubeServer'
     }
     stages {
         stage('Checkout') {
