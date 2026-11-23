@@ -10,15 +10,16 @@ pipeline {
         DOCKERHUB_CREDENTIALS_ID = 'docker'
         DOCKERHUB_REPO = 'janetjk/temp_demo'
         DOCKER_IMAGE_TAG = 'v1'
-    }stages {
+    }
+    stages {
         stage('Checkout') {
             steps {
-                git branch: 'master', url: 'YOUR REPO'
+                git 'https://github.com/JanetteJK/OTP1_inclass_ass_Janette'
             }
         }
         stage('Build') {
             steps {
-                bat 'mvn clean install'
+                bat 'mvn clean install' // sh for linux and ios
             }
         }
         stage('SonarQube Analysis') {
@@ -26,32 +27,46 @@ pipeline {
                 withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
                     withSonarQubeEnv("${env.SONARQUBE_SERVER}") {
                         bat """
-sonar-scanner ^
--Dsonar.projectKey=temp_demo ^
--Dsonar.sources=src ^
--Dsonar.projectName=temp_demo ^
--Dsonar.host.url=http://localhost:9000 ^
--Dsonar.token=%SONAR_TOKEN% ^
--Dsonar.java.binaries=target/classes
-"""
+                        sonar-scanner ^
+                        -Dsonar.projectKey=BMI_Cal ^
+                        -Dsonar.sources=src ^
+                        -Dsonar.projectName=BMI_Cal ^
+                        -Dsonar.host.url=http://localhost:9000 ^
+                        -Dsonar.token=%SONAR_TOKEN% ^
+                        -Dsonar.java.binaries=target/classes
+                        """
                     }
                 }
             }
         }
-        stage('Check Dockerfile') {
+        stage('Test') {
             steps {
-                bat 'dir'
+                bat 'mvn test'
+            }
+        }
+        stage('Code Coverage') {
+            steps {
+                bat 'mvn jacoco:report'
+            }
+        }
+        stage('Publish Test Results') {
+            steps {
+                junit '**/target/surefire-reports/*.xml'
+            }
+        }
+        stage('Publish Coverage Report') {
+            steps {
+                jacoco()
             }
         }
         stage('Build Docker Image') {
             steps {
                 script {
                     docker.build("${DOCKERHUB_REPO}:${DOCKER_IMAGE_TAG}")
-// Or specify Dockerfile path explicitly if needed
-// docker.build("${DOCKERHUB_REPO}:${DOCKER_IMAGE_TAG}", "-f ./Dockerfile .")
                 }
             }
         }
+
         stage('Push Docker Image to Docker Hub') {
             steps {
                 script {
