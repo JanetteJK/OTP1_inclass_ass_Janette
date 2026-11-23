@@ -22,23 +22,7 @@ pipeline {
                 bat 'mvn clean install' // sh for linux and ios
             }
         }
-        stage('SonarQube Analysis') {
-            steps {
-                withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
-                    withSonarQubeEnv("${env.SONARQUBE_SERVER}") {
-                        bat """
-                        sonar-scanner ^
-                        -Dsonar.projectKey=temp_demo ^
-                        -Dsonar.sources=src ^
-                        -Dsonar.projectName=temp_demo ^
-                        -Dsonar.host.url=http://localhost:9000 ^
-                        -Dsonar.token=%SONAR_TOKEN% ^
-                        -Dsonar.java.binaries=target/classes
-                        """
-                    }
-                }
-            }
-        }
+
         stage('Test') {
             steps {
                 bat 'mvn test'
@@ -72,6 +56,23 @@ pipeline {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', DOCKERHUB_CREDENTIALS_ID) {
                         docker.image("${DOCKERHUB_REPO}:${DOCKER_IMAGE_TAG}").push()
+                    }
+                }
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+                    withSonarQubeEnv("${env.SONARQUBE_SERVER}") {
+                        bat """
+                        sonar-scanner ^
+                        -Dsonar.projectKey=temp_demo ^
+                        -Dsonar.sources=src ^
+                        -Dsonar.projectName=temp_demo ^
+                        -Dsonar.host.url=http://localhost:9000 ^
+                        -Dsonar.token=%SONAR_TOKEN% ^
+                        -Dsonar.java.binaries=target/classes
+                        """
                     }
                 }
             }
