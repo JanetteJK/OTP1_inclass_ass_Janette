@@ -66,7 +66,7 @@ pipeline {
                     withSonarQubeEnv("${env.SONARQUBE_SERVER}") {
                         bat """
                         sonar-scanner ^
-                        -Dsonar.projectKey=TempController ^
+                        -Dsonar.projectKey=temp ^
                         -Dsonar.sources=src ^
                         -Dsonar.projectName=TempController ^
                         -Dsonar.host.url=http://localhost:9000 ^
